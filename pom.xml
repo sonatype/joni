@@ -120,7 +120,7 @@
   <build>
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>test</testSourceDirectory>
-    <finalName>joni</finalName>
+    <!--<finalName>joni</finalName>-->
     <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
