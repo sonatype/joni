@@ -13,6 +13,29 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!--
+    Deployment configuration. Default configuration is public.
+    -->
+    <public.serverId>sonatype-public</public.serverId>
+    <public.nexusUrl>https://repository.sonatype.org</public.nexusUrl>
+
+    <public-release.serverId>${public.serverId}</public-release.serverId>
+    <public-release.url>
+      https://repository.sonatype.org/service/local/staging/deploy/maven2
+    </public-release.url>
+
+    <public-snapshot.serverId>${public.serverId}</public-snapshot.serverId>
+    <public-snapshot.url>
+      https://repository.sonatype.org/content/repositories/snapshots
+    </public-snapshot.url>
+
+    <!--
+    Staging configuration.
+    -->
+    <staging.serverId>${public.serverId}</staging.serverId>
+    <staging.nexusUrl>${public.nexusUrl}</staging.nexusUrl>
+    <staging.progressTimeout>15</staging.progressTimeout>
   </properties>
 
   <parent>
@@ -27,9 +50,9 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:git:https://github.com/jruby/joni.git</connection>
-    <developerConnection>scm:git:git@github.com:jruby/joni.git</developerConnection>
-    <url>https://github.com/jruby/joni</url>
+    <connection>scm:git:git://github.com/sonatype/joni.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/sonatype/joni.git</developerConnection>
+    <url>https://github.com/sonatype/joni</url>
   </scm>
 
   <licenses>
@@ -61,6 +84,18 @@
       <email>lopx@gazeta.pl</email>
     </developer>
   </developers>
+
+  <distributionManagement>
+    <repository>
+      <id>${public-release.serverId}</id>
+      <url>${public-release.url}</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>${public-snapshot.serverId}</id>
+      <url>${public-snapshot.url}</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <dependencies>
     <dependency>
@@ -148,6 +183,23 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.6</version>
+        <extensions>true</extensions>
+        <configuration>
+          <nexusUrl>${staging.nexusUrl}</nexusUrl>
+          <serverId>${staging.serverId}</serverId>
+          <altStagingDirectory>${staging.directory}</altStagingDirectory>
+          <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+          <stagingProgressTimeoutMinutes>${staging.progressTimeout}</stagingProgressTimeoutMinutes>
+          <tags>
+            <localUsername>${user.name}</localUsername>
+            <javaVersion>${java.version}</javaVersion>
+          </tags>
+        </configuration>
       </plugin>
     </plugins>
   </build>
